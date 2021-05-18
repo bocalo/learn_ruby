@@ -1,8 +1,8 @@
-puts "What's your name?"
+puts 'What is your name?'
 name = gets.chomp
-puts "How tall are you?"
-height = gets.chomp
-weight = (height.to_i - 110) * 1.15
+puts 'How tall are you?'
+height = gets.chomp.to_i
+weight = (height - 110) * 1.15
 if weight < 0
   puts "#{name}, your weight is already optimal"
 else
