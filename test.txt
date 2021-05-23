@@ -1,1 +1,202 @@
 Hello, World!
+
+class Station
+  attr_accessor :trains
+  attr_reader :name
+  def initialize(name)
+    @name = name
+    @trains = []
+  end
+
+  def add_train(train)
+    @trains << train
+  end
+
+  def delete_train(train)
+    @trains = @trains.reject {|item| item.number == train.number}
+    return @trains
+  end
+
+  def all_trains_by_type(type)
+    trains_by_type = @trains.map {|train| train.type == type}
+    return trains_by_type
+  end
+end
+#####################################
+
+1 вопрос. Почему attr_accessor :trains, а не attr_reader :trains (Из-за того, что я буду менять кол-во поездов, поэтому нужен сеттер?)
+
+2. Метод delete_train(train) должен удалять поезд из списка(массива) поездов по 1 за раз. Все понятно. Только откуда взялось number? Наверное, из класса Train. Там есть параметр number. Но как он связывается с классом Station
+
+Вот код из pry
+
+st = Station.new('May')
+#<Station:0x000055e7c8bd0230 @name="May", @trains=[]>
+[52] pry(main)> st.add_train(33)
+[
+    [0] 33
+]
+[53] pry(main)> st.add_train(44)
+[
+    [0] 33,
+    [1] 44
+]
+[54] pry(main)> st.add_train(55)
+[
+    [0] 33,
+    [1] 44,
+    [2] 55
+]
+[55] pry(main)> st
+#<Station:0x000055e7c8bd0230 @name="May", @trains=[33, 44, 55]>
+[56] pry(main)> st.trains
+[
+    [0] 33,
+    [1] 44,
+    [2] 55
+]
+[57] pry(main)> st.delete_train(44)
+NoMethodError: undefined method `number' for 33:Integer
+Did you mean?  numerator
+from task_1.rb:136:in `block in delete_train'
+###################
+
+Почему ошибка?
+Если я уберу number, @trains = @trains.reject {|item| item == train},
+тогда этот метод проходит
+
+Такой же вопрос по методу all_trains_by_type(type). Реализация метода понятна, но в pry будет ошибка.
+######################
+
+class Route 
+  attr_accessor :stations
+  def initialize(start_station, finish_station)
+    @start_station = start_station
+    @finish_station = finish_station
+    @stations = []
+  end
+
+  def add_station(station)
+    @stations << station
+  end
+
+  def remove_station(station)
+    @stations.map {|item| item != station }
+  end
+
+  def get_all_routes
+    all_routes = @stations
+    all_routes.unshift(@start_station) unless all_route.include?(@start_station)
+    all_routes.push(@finish_station) unless all_route.include?(@finish_station)
+    all_routes.uniq
+  end
+
+  def set_train(train)
+    @start_station.add_train(train)
+  end
+
+  def change_station(train, type)
+    stations_list = get_all_routes
+    new_station = []
+    stations_list.each_with_index do |station, index|
+      if station.trains.include?(train)
+        if type == 'next'
+          new_station = stations_list[index + 1 > stations_list.length - 1 ? stations_list.length - 1 : index + 1]
+        else
+          new_station = stations_list[index - 1 < 0 ? 0 : index - 1]
+        end
+        puts new_station
+      end
+      station.delete_train(train)
+    end
+    new_station.add_train(train)
+  end
+
+  def show_stations_nearby(train)
+    stations_list = get_all_routes
+    stations_list.each_with_index do |station, index|
+      if station.trains.include?(train)
+        puts "предыдущая станция: #{stations_list[index - 1].name}" if index - 1 >= 0
+        puts "текущая станция: #{station.name}"
+        puts "следущая станция: #{stations_list[index + 1].name}" if index + 1 < stations_list.length 
+      end
+    end
+    
+  end
+end
+
+  
+
+  1. До метода set_train(train) более-менее понятно. А почему методы set_train(train), change_station(train, type), show_stations_nearby(train) в классе Route - это же задание для класса  Train?
+
+  ##########################
+
+  class Train
+  attr_accessor :speed 
+  attr_reader :number_of_cars, :number, :type
+
+  def initialize(number, type, number_of_cars)
+    @number = number
+    @type = type
+    @number_of_cars = number_of_cars
+  end
+
+  def stop
+    self.speed = 0
+  end
+
+  def current_speed
+    speed
+  end
+
+  def run(speed)
+    self.speed = speed
+  end
+
+  def add_cars
+    @number_of_cars += 1 if speed == 0
+  end
+
+  def delete_cars
+    @number_of_cars -= 1 if speed == 0
+  end
+
+  def train_add_route(route)
+    route.set_train(self)
+  end
+
+  def change_to_next_station(route)
+    route.change_station(self, 'next')
+  end
+
+  def change_to_prew_station(route)
+    route.change_station(self, 'prew')
+  end
+
+  def show_current_prew_next_stations(route)
+    route.show_stations_nearby(self)
+  end
+end
+##########################
+
+1. Здесь самое непонятное начинается с метода
+
+  def train_add_route(route)
+    route.set_train(self)
+  end
+
+Если я правильно понял, этот этот метод устанавливает маршрут для поезда, а self - это и есть поезд?
+
+def change_to_next_station(route)
+  route.change_station(self, 'next')
+end
+
+Здесь self - это тоже поезд? 
+
+def show_current_prew_next_stations(route)
+  route.show_stations_nearby(self)
+end
+
+Этот метод показывает все станции и self - это поезд или route? Я думаю, что поезд.
+
+У меня еще вопрос по типу. Здесь тип - это "next", "prev". Это для станций. А для поездов типы 'cargo', 'passanger' не нужны? 
