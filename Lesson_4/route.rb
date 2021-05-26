@@ -13,6 +13,7 @@ class Route
 
   def add_station(station)
     @inters << station
+    @inters.join(' ')
   end
 
   def remove_station(station)
