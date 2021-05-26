@@ -1,4 +1,3 @@
-
 class Station
   attr_reader :name, :trains
 
@@ -117,4 +116,3 @@ class Train
     @wagons -= 1 if @speed.zero?
   end
 end
-
