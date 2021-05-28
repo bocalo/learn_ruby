@@ -20,31 +20,63 @@
      - Просматривать список станций и список поездов на станции
 
 
-    У меня вопрос по заданию: 
-     (При добавлении вагона к поезду, объект вагона должен передаваться как аргумент метода и сохраняться во внутреннем массиве поезда, в отличие от предыдущего задания, где мы считали только кол-во вагонов. Параметр конструктора "кол-во вагонов" при этом можно удалить.)
-    
-    Я добавил код к методу add_wagon(wagon) в классе Train. Но поскольку есть дочерние классы  CargoTrain и PassengerTrain, может надо там созавать метод add_wagon(wagon)? Как правильно? 
+    У меня вопрос по методу -set_route_to_train-
+    Вот код:
+    def set_route_to_train
+  # список поездов для маршрута
+  puts "#{trains_list}"
 
+  # список станций для маршрута
+  puts "#{stations_list}"
 
-    "Этот метод будет вызываться из клиентского кода?", тогда это public, в остальном - private.  
-    Этого я не понял. По идее весь код (например в классе Train), клиентский. Я же могу вызвать все методы.
+  # выбрать из этого списка поезд
+  puts 'Введите номер поезда.'
+  number = gets.chomp.to_s
+  
+  puts "#{select_train(number)}"
+  puts 'Bведите номер маршрута'
 
-    Но я поставил - private - перед методом - current_station -, потому что этот метод составная часть вышестоящих методов. А вот насчет методов  -next_station-, -prev_station- я не уверен.
+  num_route = gets.chomp.to_s
+  puts "#{select_route(num_route)}"
 
-    Теоретически я понял, что методы private(по аналогии с авто - я могу управлять, не зная как работает двигатель) - это методы "под капотом", но на практике их определить не совсем понятно как.
+  # выбрать из этого списка станции, через которые пойдет поезд
+  puts 'Введите название станции.'
+  name = gets.chomp.to_s
+  puts "#{select_stations(name)}"
 
-    Cейчас я все-таки перенес метод -add_wagon(wagon)- в класс -CargoTrain-
-    Здесь ошибка 
+  #установить выбранному поезду выбранный маршрут
+  # Здесь я застрял
 
-    main.rb:25:in `<main>': undefined local variable or method `wg1' for main:Object (NameError)
+  Я специально написал интерполяцию, чтобы весь код был виден в консоли
 
-    Метод - def add_wagon(wagon)
-    @wagons += wagon if @speed.zero? && @trains.type == wagon.type
-  end
-    
-    Вызов в main.rb - pp ct1 = CargoTrain.new
-                    - pp ct1.add_wagon(wg1)
-    
-    Я понял, что интерпретатор не видит -wg1-. Не пойму, почему?
-    На всякий случай я выложу код на github 
-    адрес https://github.com/bocalo/learn_ruby/tree/master/Lesson_4
+  Я написал 
+  --# выбрать из этого списка поезд
+  puts 'Введите номер поезда.'
+  number = gets.chomp.to_s
+
+  Это логично, но у меня нет в классе Route аргумента "number". Мне надо менять код в классе Route или есть другие варианты.
+  Вот что получилось
+
+  [#<CargoTrain:0x0000555bdcb72478 @number="100", @type=:cargo, @wagons=nil>]
+Список станций: Apple
+Grape
+Tomato
+Apple
+Tomato
+[#<Station:0x0000555bdcb73c38 @name="Apple", @trains=[]>, #<Station:0x0000555bdcb739e0 @name="Grape", @trains=[]>, #<Station:0x0000555bdcb735f8 @name="Tomato", @trains=[]>, #<Station:0x0000555bdcb73008 @name="Apple", @trains=[]>, #<Station:0x0000555bdcb72ec8 @name="Tomato", @trains=[]>]
+Введите номер поезда.
+100
+[#<CargoTrain:0x0000555bdcb72478 @number="100", @type=:cargo, @wagons=nil>]
+Bведите номер маршрута
+200
+[]
+Введите название станции.
+Apple
+[#<Station:0x0000555bdcb73c38 @name="Apple", @trains=[]>, #<Station:0x0000555bdcb73008 @name="Apple", @trains=[]>]
+
+  
+  И еще никак не могу понять, как маршрут запихнуть в поезд.
+
+  На всякий случай отправлю на гитхаб.
+
+  

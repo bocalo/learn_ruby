@@ -1,11 +1,9 @@
 class CargoTrain < Train
-  attr_reader :cargo, :wagons
+  attr_reader :number, :type, :wagons
 
-  def initialize(wagons = [])
+  def initialize(number, type = :cargo)
+    @number = number
+    @type = type
     @wagons = wagons
-  end
-
-  def add_wagon(wagon)
-    @wagons += wagon if @speed.zero? && @trains.type == wagon.type
   end
 end

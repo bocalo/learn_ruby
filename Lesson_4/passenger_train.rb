@@ -1,7 +1,8 @@
 class PassengerTrain < Train
-   attr_reader :passenger, :wagons
-   
-  def initialize(type = :passenger, wagons = [])
+   attr_reader :number, :type, :wagons
+
+  def initialize(number, type = :passenger)
+    @number = number
     @type = type
     @wagons = wagons
   end
