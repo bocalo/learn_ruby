@@ -80,3 +80,64 @@ Apple
   На всякий случай отправлю на гитхаб.
 
   
+
+  Я написал вариант с методом -set_route_to_train-
+
+  def set_route_to_train
+    puts "#{ select_route }"
+  end
+
+  def select_route
+    puts "Введите число, что бы выбрать маршрут."
+    choice = gets.chomp.to_i
+    @routes.each { |route| puts "Ваш маршрут: #{route.all_stations[0]} - #{route.all_stations[-1]}" }
+  end
+
+  Но, когда проверял класс Route, 
+  метод - remove_station_from_route -
+
+  def remove_station_from_route
+    puts "Назовите станцию, которую нужно удалить: "
+    station = gets.chomp.to_s
+    @routes.each { |el| el.inters.delete(station) if el.inters.include?(station) }
+    puts "Станция #{station} удалена."
+  end
+
+  Он удаляет станцию, но может удалить любую, независимо есть ли она на маршруте или нет. Хотя я поставил условие.
+
+  # def set_route_to_train
+#   select_route
+  # список поездов для маршрута
+  #puts "#{trains_list}"
+
+  # список станций для маршрута
+  #puts "#{stations_list}"
+
+  # выбрать из этого списка поезд
+  
+  
+  #puts "#{select_train(number)}"
+  #puts 'Bведите номер маршрута'
+
+  #num_route = gets.chomp.to_s
+  #puts "#{ select_route }"
+
+  # выбрать из этого списка станции, через которые пойдет поезд
+  # puts 'Введите название станции.'
+  # name = gets.chomp.to_s
+  # puts "#{select_stations(name)}"
+
+  #установить выбранному поезду выбранный маршрут
+#end
+
+# def trains_list
+#   @trains.each { |el| el.number }
+# end
+
+# def select_train(number)
+#   @trains.select { |el| el.number == number }
+# end
+
+# def select_route(num_route)
+#   @routes.select { |el| el.all_stations == num_route }
+# end
