@@ -10,8 +10,8 @@ class Train
     @station_index = nil
   end
 
-  def set_route(r)
-    @route = r
+  def set_route(route)
+    @route = route
     @station_index = 0
     current_station.take_train(self)
   end
