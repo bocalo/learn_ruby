@@ -195,15 +195,13 @@ class Interface
   #   end
   # end
 
-  def create_wagon(type)
-    if type == :cargo
-      CargoWagons.new
-    elsif type == :passenger
-      PassengerWagons.new
-    end
-  end
-
-
+  # def create_wagon(type)
+  #   if type == :cargo
+  #     CargoWagons.new
+  #   elsif type == :passenger
+  #     PassengerWagons.new
+  #   end
+  # end
 
   # def add_wagon
   #   trains_list
@@ -222,12 +220,18 @@ class Interface
     puts 'Выберите поезд:'
     title = gets.chomp
     pp train = find_train(title)
-    
-    puts "Какой тип вагона добавить?"
-    type = gets.chomp.to_sym
-    wagon = create_wagon(type)
-    train.add_wagon(wagon) #if train.train_speed
+    if train.type == :cargo
+      train.add_wagon(CargoWagons.new)
+    else
+      train.add_wagon(PassengerWagons.new)
+    end
     puts 'Вагон добавлен к поезду.'
+  
+    # puts "Какой тип вагона добавить?"
+    # type = gets.chomp.to_sym
+    # wagon = create_wagon(type)
+    # train.add_wagon(wagon) 
+    # puts 'Вагон добавлен к поезду.'
 
     # puts "Какой тип вагона добавить?"
     # type = gets.chomp.to_sym
@@ -242,9 +246,7 @@ class Interface
     # end
   end
 
-  # def train_speed
-  #   @trains.each { |el| el.speed == 0 }
-  # end
+  
 
   def find_train(title)
     @trains.find { |el| el.number == title }
