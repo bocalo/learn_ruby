@@ -1,5 +1,5 @@
 class Train
-  attr_reader :speed, :wagons, :type, :number
+  attr_reader :speed, :wagons, :type, :number, :route
 
   def initialize(number, type = :cargo, wagons)
     @number = number
@@ -8,26 +8,6 @@ class Train
     @speed = 0
     @route = nil
     @station_index = nil
-  end
-
-  def set_route(route)
-    @route = route
-    @station_index = 0
-    current_station.take_train(self)
-  end
-
-  def move_forward
-    return unless @route && next_station
-    current_station.send_train(self)
-    @station_index += 1
-    current_station.take_train(self)
-  end
-
-  def move_back
-    return unless @route && prev_station
-    current_station.send_train(self)
-    @station_index -= 1
-    current_station.take_train(self)
   end
 
   def speed_up(number)
@@ -52,6 +32,12 @@ class Train
 
   def remove_wagons(wagon)
     @wagons.delete wagon if @speed.zero? && self.type == wagon.type
+  end
+
+  def set_route(route)
+    @route = route
+    @station_index = 0
+    current_station.take_train(self)
   end
 
   def move_forward
