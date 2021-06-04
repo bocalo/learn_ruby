@@ -1,3 +1,4 @@
+require "byebug"
 require_relative "station"
 require_relative "route"
 require_relative "train"
@@ -7,15 +8,6 @@ require_relative "wagons"
 require_relative "passenger_wagons"
 require_relative "cargo_wagons"
 
-
-# - Создавать станции
-#      - Создавать поезда
-#      - Создавать маршруты и управлять станциями в нем (добавлять, удалять)
-#      - Назначать маршрут поезду
-#      - Добавлять вагоны к поезду
-#      - Отцеплять вагоны от поезда
-#      - Перемещать поезд по маршруту вперед и назад
-#      - Просматривать список станций и список поездов на станции
 class Interface
   def initialize
     @stations = []
@@ -59,7 +51,7 @@ class Interface
       1. Создать станцию
       2. Просмотреть список всех станций
       3. Вернуться в главное меню
-      4. Выйти из прграммы
+      4. Выйти из прoграммы
       '
 
       choice = gets.chomp.to_i
@@ -84,7 +76,6 @@ class Interface
     name = gets.chomp.to_s
     puts "#{Station.new(name)}"
     @stations << Station.new(name)
-    
     puts "Станция '#{name}' создана."
   end
 
@@ -121,7 +112,7 @@ class Interface
       when 5
         go_to_next_station
       when 6
-        go_to_previous_station
+        go_to_back_station
       when 7
         break
       when 8
@@ -161,44 +152,25 @@ class Interface
     end
   end
 
-
-  # def set_route_to_train
-  #   puts 'Введите число, что бы выбрать маршрут.'
-  #   choice = gets.chomp.to_i
-  #   @routes.each { |route| puts "Ваш маршрут: #{route.all_stations[0]} - #{route.all_stations[-1]} под номером #{choice} создан." }
-  # end
-
-  # def set_route_to_train
-  #   puts 'Выберите маршрут.'
-  #   idx = gets.chomp.to_i
-  #   route = select_route(idx)
-
-  #   puts 'Выберите поезд.'
-  #   num = gets.chomp.to_i
-  #   train = select_train(num)
-  #   puts "#{train}"
-
-  #   train.set_route(route)
-  #   puts 'Ваш маршрут создан.'
-  # end
-
-  
-
   def set_route_to_train
-    puts 'Выберите маршрут.'
-    choice = gets.chomp.to_i
-    pp @routes.each_with_index { |el, i|  puts "#{i}: #{el}" }
-    route = @routes[choice]
-    puts "#{route}"
-    
+    routes_list
+    puts 'Выберите маршрут(индекс).'
+    idx = gets.chomp.to_i
+    route = select_route(idx)
+    puts "Маршрут с индексом #{idx} назначен: #{route}"
+
+    trains_list
     puts 'Выберите поезд.'
-    title = gets.chomp.to_i
-    pp @trains.each_with_index { |el, i|  puts "#{i}: #{el}" }
-    train = @trains[title]
+    title = gets.chomp
+    
+    train = find_train(title)
     puts "#{train}"
 
-    set = train.set_route(route)
-    puts "#{set.inspect}"
+    train.set_route(route)
+    puts "#{train.set_route(route)}"
+    puts 'Ваш маршрут создан.'
+    print 'Этот маршрут проходит через станции: '
+    route.all_stations.each { |el| puts el.name }
   end
 
   def add_wagon
@@ -211,7 +183,7 @@ class Interface
     else
       train.add_wagon(PassengerWagons.new)
     end
-    puts 'Вагон добавлен к поезду.'
+    puts "Вагон добавлен к поезду #{train.number}."
   end
 
   def remove_wagon
@@ -219,40 +191,35 @@ class Interface
     puts 'Выберите поезд.'
     title = gets.chomp
     train = find_train(title)
-    if train.type == :cargo
+    if train.type == :cargo && train.wagons.size != 0
       train.remove_wagons(CargoWagons.new)
-    else
+      puts "Отцепляем грузовой вагон. Вагон отцеплен от поезда #{train.number}"
+    elsif train.type == :passenger && train.wagons.size != 0
       train.remove_wagons(PassengerWagons.new)
+      puts "Отцепляем пассажирский вагон. Вагон отцеплен от поезда #{train.number}"
+    else
+      puts "Нечего отцеплять."
     end
-    puts 'Вагон отцеплен от поезда.'
-  end
-
-  def current_station
-    trains_list
-    puts 'Какой поезд сейчас стоит на станции?'
-    title = gets.chomp
-    train = find_train(title)
-    train_station = train.current_station
-    puts "Поезд сейчас стоит на станции #{train_station}"
   end
 
   def go_to_next_station
-    trains_list
-    puts 'Какой поезд сейчас стоит на станции?'
-    title = gets.chomp
-    pp train = find_train(title)
-    train_station = train.move_forward
-    pp train_station
-    puts "Поезд сейчас идет до станции #{train_station}"
-  end
-
-  def go_to_previuos_station
-    trains_list
-    puts 'Какой поезд сейчас стоит на станции?'
+    puts 'Назовите номер поезда.'
     title = gets.chomp
     train = find_train(title)
-    train_station = train.move_back
-    puts "Поезд сейчас идет до станции #{train_station}"
+    train_station = train.current_station
+    puts "Поезд сейчас стоит на станции #{train_station.name}"
+    train.move_forward
+    puts "Поезд #{train.number} отправился со станции #{train.current_station.name} на станцию #{train.next_station.name}"
+  end
+
+  def go_to_back_station
+    puts 'Назовите номер поезда.'
+    title = gets.chomp
+    train = find_train(title)
+    train_station = train.next_station
+    puts "Поезд сейчас стоит на станции #{train_station.name}"
+    train.move_forward
+    puts "Поезд #{train.number} отправился со станции #{train.current_station.name} на станцию #{train.prev_station.name}"
   end
 
   def find_train(title)
@@ -269,15 +236,11 @@ class Interface
   end
 
   def select_stations(name)
-    @stations.select { |el| el.name == name }
-  end
-
-  def select_train(num)
-    @trains.select { |el| el.number == num }
+    @stations.find { |el| el.name == name }
   end
 
   def select_route(idx)
-    @routes.select { |el| el if @routes.index(el) == idx }
+    @routes[idx]
   end
 
   def routes_menu
@@ -316,52 +279,51 @@ class Interface
     end
 
     puts 'Введите первую станцию'
-    @first_station = gets.chomp.to_s
-    @stations << Station.new(@first_station)
+    name1 = gets.chomp
+    first_station = select_stations(name1)
     puts 'Введите конечную станцию'
-    @last_station = gets.chomp.to_s
-    @stations << Station.new(@last_station)
-    @routes << Route.new(@first_station, @last_station)
-    puts "Маршрут от станции '#{@first_station}' до станции '#{@last_station}' создан."
+    name2 = gets.chomp
+    last_station = select_stations(name2)
+    
+    @routes << Route.new(first_station, last_station)
+    puts "Маршрут от станции '#{first_station.name}' до станции '#{last_station.name}' создан."
+    puts "#{stations_list}"
+    puts
+    puts "#{routes_list}"
   end
 
-  # def add_station_to_route
-  #   puts "Назовите станцию, которую нужно добавить: "
-  #   station = gets.chomp.to_s
-  #   puts "Назовите маршрут."
-  #   #route = gets.chomp.to_i
-  #   station = "#{@routes[0]}" 
-  #   puts "#{station}"
-  #   puts "#{@routes[0].add_station(station)}" 
-
-  #   # @routes.each { |el| el.inters << station }
-  #   # all = @routes.each { |el| el.all_stations } 
-  #   # puts "#{all.each { |el| el }}"
-  #   puts "Станция #{station} добавлена."
-  # end
-
   def add_station_to_route
-    puts "Назовите маршрут."
+    routes_list
+    puts "Назовите маршрут(индекс)."
     idx = gets.chomp.to_i
     route = select_route(idx)
-    
+    puts "Маршрут #{route}: номер #{idx}."
+
     puts "Назовите станцию, которую нужно добавить: "
     name = gets.chomp
     station = select_stations(name)
-    puts "#{station}"
-    route.each { |el| el.inters << station }
+    route.add_station(station)
+    
     puts "#{route}"
-    puts "Станция #{station} добавлена."
+    puts
+    puts "Станция #{station.name} добавлена."
+    puts
+    puts "#{@routes}"
   end
 
   def remove_station_from_route
+    puts "Назовите маршрут(индекс)."
+    idx = gets.chomp.to_i
+    route = select_route(idx)
+    puts "#{route}"
+
     puts "Назовите станцию, которую нужно удалить: "
     name = gets.chomp
     station = select_stations(name)
-    @routes.each { |el| el.inters.delete(station) if el.inters.include?(station) }
-    puts "#{@routes}"
-    puts "Станция #{station} удалена."
+    route.remove_station(station)
     
+    puts "#{@routes}"
+    puts "Станция #{station.name} удалена."
   end
 end
 
