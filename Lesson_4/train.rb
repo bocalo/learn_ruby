@@ -54,8 +54,6 @@ class Train
     current_station.take_train(self)
   end
 
-  private
-
   def current_station
     @route.all_stations[@station_index]
   end
