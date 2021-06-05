@@ -43,6 +43,8 @@ class Interface
     end
   end
 
+  private
+
   def stations_menu
     loop do
       puts '
