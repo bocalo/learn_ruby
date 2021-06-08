@@ -6,6 +6,10 @@ module InstanceCounter
 
   module ClassMethods
     attr_accessor :count
+
+    def instances
+      self.count ||= 0
+    end
     
     def count_instances
       self.count ||= 0
