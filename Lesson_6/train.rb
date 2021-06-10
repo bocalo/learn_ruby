@@ -10,7 +10,7 @@ class Train
   attr_reader :speed, :wagons, :type, :number, :route
 
   NUMBER_FORMAT = /^[a-z]{2}-\d{3}$/i
-  #TRAIN_TYPES = %i[cargo passenger]
+  #TRAIN_TYPES = %q[cargo passenger]
 
   @@trains = []
 
@@ -94,6 +94,8 @@ class Train
   def validate!
     raise ArgumentError, 'Введен пустой номер' if self.number.nil?
     raise ArgumentError, 'Number of the train has invalid format' if self.number !~ NUMBER_FORMAT
+    #   raise ArgumentError, 'Неправильный тип поезда'
+    # raise ArgumentError, 'Неправильный тип поезда' unless self.type == :cargo || self.type == :passenger
     # unless TRAIN_TYPES.include?(@type)
     #   raise ArgumentError, 'Неправильный тип поезда'
     # end

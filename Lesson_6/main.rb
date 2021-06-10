@@ -76,7 +76,6 @@ class Interface
   def create_station
     print 'Введите название станции: '
     name = gets.chomp.to_s
-    #puts "#{Station.new(name)}"
     @stations << Station.new(name)
     puts "Станция '#{name}' создана."
   rescue ArgumentError => e
@@ -128,21 +127,25 @@ class Interface
     end
   end
 
+
   def create_train
     #attempt = 0
     begin
+      
       print 'Введите номер поезда: '
       number = gets.chomp
 
       print "Выберите тип поезда. 1-(грузовой), 2-(пассажирский). Введите число: "
-      type = gets.chomp.to_i
+      train_type = gets.chomp.to_i
       
-      if type == 1
+      if train_type == 1
         @trains << CargoTrain.new(number)
         puts "Создан грузовой поезд номер #{number}."
-      elsif type == 2
+      elsif train_type == 2
         @trains << PassengerTrain.new(number)
         puts "Создан пассажирский поезд номер #{number}."
+      elsif train_type != 1 || train_type != 2
+        puts 'Неправильный тип поезда. Нужно 1 или 2.'
       end
     rescue ArgumentError => e
       puts e.message

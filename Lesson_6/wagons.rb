@@ -16,6 +16,7 @@ class Wagons
 
   def validate!
     unless WAGON_TYPES.include?(@type)
-    raise ArgumentError, "Wagon's type must be cargo or passenger" 
+      raise ArgumentError, "Wagon's type must be cargo or passenger" 
+    end
   end
 end
