@@ -31,8 +31,8 @@ class Route
   end
 
   def validate!
-    raise ArgumentError, 'The station can not be nil' if self.first_station.nil? ||
-                                                         self.last_station.nil?
+    raise ArgumentError, 'The station can not be nil' if first_station.nil? ||
+                                                         last_station.nil?
     raise ArgumentError, 'You need two stations to create the route' if [@first_station, @last_station].length < 2
     raise ArgumentError, 'The stations need to have different names' if first_station.name == last_station.name
   end

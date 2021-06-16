@@ -4,7 +4,7 @@ class CargoTrain < Train
   attr_reader :number, :type, :wagons
 
   def initialize(number)
-    super(number, type = :cargo)
+    super(number, :cargo)
   end
 
   # def initialize(number)

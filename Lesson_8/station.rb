@@ -55,11 +55,6 @@ class Station
     raise ArgumentError, 'Name should be at least 3 chars. Try again' if name.length < 3
     raise ArgumentError, 'Name has invalid format' if name !~ NAME_FORMAT
 
-    if self.class.find(@name)
-      raise ArgumentError, 'Станция с таким названием уже существует'
-    end
-    # return unless self.class.find(@name)
-    #   raise ArgumentError, 'Станция с таким названием уже существует'
-    
+    raise ArgumentError, 'Станция с таким названием уже существует' if self.class.find(@name)
   end
 end

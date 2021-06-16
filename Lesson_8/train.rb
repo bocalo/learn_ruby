@@ -101,6 +101,6 @@ class Train
 
   def validate!
     raise ArgumentError, 'Введен пустой номер' if number.nil?
-    #raise ArgumentError, 'Number of the train has invalid format' if self.number !~ NUMBER_FORMAT
+    # raise ArgumentError, 'Number of the train has invalid format' if self.number !~ NUMBER_FORMAT
   end
 end

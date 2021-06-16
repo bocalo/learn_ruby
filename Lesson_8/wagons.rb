@@ -22,9 +22,7 @@ class Wagons
   end
 
   def validate!
-    unless WAGON_TYPES.include?(@type)
-      raise ArgumentError, "Wagon's type must be cargo or passenger"
-    end
-    raise ArgumentError, "Wagon's space can't be nil" if space <= 0
+    # raise ArgumentError, "Wagon's type must be cargo or passenger" unless WAGON_TYPES.include?(@type)
+    # raise ArgumentError, "Wagon's space can't be nil" if space.zero?
   end
 end

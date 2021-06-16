@@ -136,8 +136,6 @@ class Interface
   end
 
   def create_train
-    # attempt = 0
-
     print 'Введите номер поезда: '
     number = gets.chomp
     print 'Выберите тип поезда. 1-(грузовой), 2-(пассажирский). Введите число: '
@@ -155,10 +153,6 @@ class Interface
   rescue ArgumentError => e
     puts e.message
     retry
-    # attempt += 1
-    # retry if attempt < 3
-    # ensure
-    #   puts "There was #{attempt} attempts"
   end
 
   def set_route_to_train
@@ -185,7 +179,7 @@ class Interface
     trains_list
     puts 'Выберите поезд:'
     title = gets.chomp
-    puts 'Не тот номер' if title != NUMBER_FORMAT
+    # puts 'Не тот номер' if title != NUMBER_FORMAT
     train = find_train(title)
 
     if train.type == :cargo
@@ -198,11 +192,17 @@ class Interface
     else
       puts 'Некуда прицеплять.'
     end
-    # puts "Вагон добавлен к поезду #{train.number}."
-    # rescue ArgumentError => e
-    #   puts e.message
-    #   retry
+  rescue ArgumentError => e
+    puts e.message
+    retry
   end
+
+  # def input_info
+  #   trains_list
+  #   puts 'Выберите поезд.'
+  #   title = gets.chomp
+  #   train = find_train(title)
+  # end
 
   def remove_wagon
     trains_list
@@ -255,28 +255,36 @@ class Interface
 
     puts wagon.to_s
     if wagon.type == :cargo
-      puts 'Сколько надо загрузить?'
-      place = gets.to_i
-      if (wagon.free_space - place) > 0
-        puts  "В вагоне останетсяся объем - #{wagon.free_space - place} кубов. Загружайте"
-      else
-        puts  "В вагоне останетсяся объем - #{wagon.free_space - place} кубов."
-        puts 'Ну, вы сами видите!'
-      end
+      cargo_w(wagon)
     elsif wagon.type == :passenger
-      puts 'Сколько мест вам нужно?'
-      place = gets.to_i
-      if (wagon.free_space - place) > 0
-        puts 'Занимайте места.'
-      else
-        puts 'Свободных мест нет.'
-      end
+      passenger_w(wagon)
     else
       puts 'Нет вагонов.'
     end
   rescue ArgumentError => e
     puts e.message
     retry
+  end
+
+  def cargo_w(wagon)
+    puts 'Сколько надо загрузить?'
+    place = gets.to_i
+    if (wagon.free_space - place).positive?
+      puts "В вагоне останетсяся объем - #{wagon.free_space - place} кубов."
+      puts 'Загружайте'
+    else
+      puts "В вагоне останетсяся объем - #{wagon.free_space - place} кубов."
+    end
+  end
+
+  def passenger_w(wagon)
+    puts 'Сколько мест вам нужно?'
+    place = gets.to_i
+    if (wagon.free_space - place).positive?
+      puts 'Занимайте места.'
+    else
+      puts 'Свободных мест нет.'
+    end
   end
 
   def go_to_next_station
@@ -357,6 +365,8 @@ class Interface
   def create_route
     if @stations.length < 2
       puts 'Нужно не меньше двух станций для создания маршрута.'
+    else
+      puts 'Все нормально.'
     end
     begin
       puts 'Введите первую станцию'
@@ -371,10 +381,6 @@ class Interface
     rescue ArgumentError => e
       puts e.message
       retry
-
-      stations_list
-
-      routes_list
     end
   end
 
@@ -398,7 +404,7 @@ class Interface
     puts 'Назовите маршрут(индекс).'
     idx = gets.chomp.to_i
     route = select_route(idx)
-    
+
     puts 'Назовите станцию, которую нужно удалить: '
     name = gets.chomp
     station = select_stations(name)
