@@ -27,18 +27,13 @@ class Interface
       3. Перейти в меню маршрутов
       4. Выйти из прграммы
       '
-
       choice = gets.chomp.to_i
 
       case choice
-      when 1
-        stations_menu
-      when 2
-        trains_menu
-      when 3
-        routes_menu
-      when 4
-        exit
+      when 1 then stations_menu
+      when 2 then trains_menu
+      when 3 then routes_menu
+      when 4 then exit
       else
         puts 'Неправильно набран номер. Попробуйте еще раз.'
       end
@@ -57,18 +52,13 @@ class Interface
       3. Вернуться в главное меню
       4. Выйти из прoграммы
       '
-
       choice = gets.chomp.to_i
 
       case choice
-      when 1
-        create_station
-      when 2
-        stations_list
-      when 3
-        break
-      when 4
-        exit
+      when 1 then create_station
+      when 2 then stations_list
+      when 3 then break
+      when 4 then exit
       else
         puts 'Неправильно набран номер. Попробуйте еще раз.'
       end
@@ -109,26 +99,16 @@ class Interface
       choice = gets.chomp.to_i
 
       case choice
-      when 1
-        create_train
-      when 2
-        set_route_to_train
-      when 3
-        add_wagon
-      when 4
-        remove_wagon
-      when 5
-        go_to_next_station
-      when 6
-        go_to_back_station
-      when 7
-        info_wagon
-      when 8
-        take_seat_or_volume
-      when 9
-        break
-      when 0
-        exit
+      when 1 then create_train
+      when 2 then set_route_to_train
+      when 3 then add_wagon
+      when 4 then remove_wagon
+      when 5 then go_to_next_station
+      when 6 then go_to_back_station
+      when 7 then info_wagon
+      when 8 then take_seat_or_volume
+      when 9 then break
+      when 0 then exit
       else
         puts 'Неправильно набран номер. Попробуйте еще раз.'
       end
@@ -150,7 +130,7 @@ class Interface
     elsif train_type != 1 || train_type != 2
       puts 'Неправильный тип поезда. Нужно 1 или 2.'
     end
-  rescue ArgumentError => e
+  rescue RuntimeError => e
     puts e.message
     retry
   end
@@ -192,7 +172,7 @@ class Interface
     else
       puts 'Некуда прицеплять.'
     end
-  rescue ArgumentError => e
+  rescue NoMethodError => e
     puts e.message
     retry
   end
@@ -251,7 +231,7 @@ class Interface
     wagons_list(train)
     puts 'Выберите вагон(индекс).'
     wagon = train.wagons[gets.to_i]
-    raise ArgumentError, 'Не то название вагона' if wagon.nil?
+    raise StandardError, 'Не то название вагона' if wagon.nil?
 
     puts wagon.to_s
     if wagon.type == :cargo
@@ -261,7 +241,7 @@ class Interface
     else
       puts 'Нет вагонов.'
     end
-  rescue ArgumentError => e
+  rescue StandardError => e
     puts e.message
     retry
   end
@@ -346,16 +326,11 @@ class Interface
 
       choice = gets.chomp.to_i
       case choice
-      when 1
-        create_route
-      when 2
-        add_station_to_route
-      when 3
-        remove_station_from_route
-      when 4
-        break
-      when 5
-        exit
+      when 1 then create_route
+      when 2 then add_station_to_route
+      when 3 then remove_station_from_route
+      when 4 then break
+      when 5 then exit
       else
         puts 'Неправильно набран номер. Попробуйте еще раз.'
       end

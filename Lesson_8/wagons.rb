@@ -8,6 +8,7 @@ class Wagons
   include Validation
 
   WAGON_TYPES = %i[cargo passenger].freeze
+  WAGON_TYPES_ERROR = 'Вагон дожен быть грузовым или пассажирским'
 
   attr_reader :type, :space
 
@@ -22,7 +23,7 @@ class Wagons
   end
 
   def validate!
-    # raise ArgumentError, "Wagon's type must be cargo or passenger" unless WAGON_TYPES.include?(@type)
-    # raise ArgumentError, "Wagon's space can't be nil" if space.zero?
+    raise WAGON_TYPES_ERROR unless WAGON_TYPES.include?(@type)
+    # raise StandardError, "Wagon's space can't be nil" if space.zero?
   end
 end
